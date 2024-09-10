@@ -16,7 +16,7 @@ warnings.filterwarnings("once", category=FutureWarning)
 TRANSFORMERS = ["Mol2Mol", "LinkinventTransformer", "LibinventTransformer"]
 
 
-def setup_sampler(model_type: str, config: dict, agent: ModelAdapter):
+def setup_sampler(model_type: str, config: dict, agent: ModelAdapter, reaction = None):
     """Setup the sampling module.
 
     The sampler module must be for the same model as the optimization strategy.
@@ -73,6 +73,7 @@ def setup_sampler(model_type: str, config: dict, agent: ModelAdapter):
         isomeric=isomeric,  # needed for Transformer-based models
         randomize_smiles=randomize_smiles,
         unique_sequences=unique_sequences,
-    )
+        reaction=reaction
+    )        
 
     return sampler, batch_size

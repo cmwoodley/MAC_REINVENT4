@@ -265,12 +265,17 @@ def run_staged_learning(
     logger.info(f"Agent read from {agent_model_filename}")
 
     smilies = None
+    reaction = None
 
     if parameters.smiles_file:
-        smilies = config_parse.read_smiles_csv_file(parameters.smiles_file, columns=0)
+        parse_output = config_parse.read_smiles_csv_file(parameters.smiles_file, columns=0)
+        if type(parse_output) == tuple:
+            smilies, reaction = parse_output
+        else:
+            smilies = parse_output
         logger.info(f"Input molecules/fragments read from file {parameters.smiles_file}")
 
-    sampler, _ = setup_sampler(model_type, parameters.dict(), agent)
+    sampler, _ = setup_sampler(model_type, parameters.dict(), agent, reaction)
     reward_strategy = setup_reward_strategy(config.learning_strategy, agent)
 
     global_df_only = False
