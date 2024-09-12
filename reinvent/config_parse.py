@@ -192,6 +192,7 @@ def write_json(data: str, filename: str) -> None:
 
 # Function to get SMARTS for a radius around each attachment point
 def get_radius_smarts(mol, atom_idx, radius):
+
     env = Chem.FindAtomEnvironmentOfRadiusN(mol, radius, atom_idx)
     atoms = set([atom_idx])
     for b in env:
@@ -199,7 +200,15 @@ def get_radius_smarts(mol, atom_idx, radius):
         atoms.add(mol.GetBondWithIdx(b).GetEndAtomIdx())
     amap = {}
     submol = Chem.PathToSubmol(mol, env, atomMap=amap)
-    smarts = Chem.MolToSmarts(submol)
+
+    # Remove any dummy atoms (atomic number 0)
+    emol = Chem.EditableMol(submol)
+    to_remove = [atom.GetIdx() for atom in submol.GetAtoms() if atom.GetAtomicNum() == 0]
+    for idx in reversed(to_remove):  # avoids messing with indices
+        emol.RemoveAtom(idx)
+    cleaned_submol = emol.GetMol()
+    
+    smarts = Chem.MolToSmarts(cleaned_submol)
     return smarts
 
 # Function to check if all SMARTS patterns are chemically unique
@@ -303,7 +312,7 @@ def get_warheads_for_macrocycle(smiles):
             smarts_list = [remove_stereochem_smarts(x) for x in smarts_list]
         all_unique = get_unique_smarts(smarts_list)
 
-        if all_unique:
+        if all_unique and len(env_dis1) != 0 and len(env_dis2) != 0: # Sometimes environment search fails
             break
 
 
