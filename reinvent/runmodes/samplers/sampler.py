@@ -45,6 +45,7 @@ class Sampler(ABC):
     isomeric: bool = False  # Transformer-based models
     randomize_smiles: bool = True
     unique_sequences: bool = False  # backwards compatibility for R3
+    reaction: str = None # add macrocycle compatability if present
 
     @abstractmethod
     def sample(self, smilies: List[str]) -> SampleBatch:

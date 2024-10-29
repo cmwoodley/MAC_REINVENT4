@@ -1,6 +1,29 @@
 REINVENT 4
 ==========
 
+Modifications to enable generation of macrocycles
+-----------
+
+* Modified config parse for Linkinvent and Sampling to accept scaffold with two attachment points for macrocyclisation
+* Added function to generate Linkinvent sequence input from scaffold by disconnection and reaction SMARTS generation
+* Added code to reconnect macrocycle prior to scoring - enables scoring on whole molecule
+
+Usage - macrocycles
+-----------
+Input smiles are scaffold decorated with two attachment points and flag "MAC" at the end of the string.
+Example warheads: 
+```
+ClC1=CC=C(O[*])C(NC(NC2=NC(O[*])=CN=C2)=O)=C1MAC
+```
+Usage identical to linkinvent otherwise. This input generates the warheads:
+```
+*OC1CC=NC(NC(=O)N[S+])=N1|*Oc1ccc(Cl)cc1[S+]
+```
+And the reaction SMARTS:
+```
+([#17:1]-[#6:2]1:[#6:3]:[#6:4]:[#6:5](-[#8:6]):[#6:7](:[#6:8]:1)-[#16+:9].[#7:10](-[#6:11](-[#7:12]-[#6:13])=[#8:14])-[#16+:15])>>[#17:1]-[#6:2]1:[#6:3]:[#6:4]:[#6:5](-[#8:6]):[#6:7](:[#6:8]:1)[#7:10]-[#6:11](-[#7:12]-[#6:13])=[#8:14]
+```
+
 
 Description
 -----------

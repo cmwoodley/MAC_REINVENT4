@@ -15,6 +15,8 @@ from reinvent.chemistry import conversions, tokens
 from reinvent.chemistry.library_design import attachment_points
 from ...models.transformer.core.dataset.dataset import Dataset as TransformerDataset
 
+from rdkit import Chem
+
 logger = logging.getLogger(__name__)
 
 
@@ -82,6 +84,20 @@ class LinkinventSampler(Sampler):
             mols, sampled.output, isomeric=self.isomeric
         )
 
+        if self.reaction is not None:
+            rxn = Chem.rdChemReactions.ReactionFromSmarts(self.reaction)
+            mac_smiles = []
+            for smiles in sampled.smilies:
+                try:
+                    mol = rxn.RunReactant(Chem.MolFromSmiles(smiles),0)[0][0]
+                    if mol is None:
+                        mac_smiles.append(smiles)
+                    else:
+                        mac_smiles.append(Chem.MolToSmiles(mol))
+                except:
+                    mac_smiles.append(smiles)
+            sampled.smilies = mac_smiles
+
         return sampled
 
     def _standardize_input(self, warheads_list: List[str]):
@@ -98,7 +114,6 @@ class LinkinventSampler(Sampler):
 
     def _get_randomized_smiles(self, warhead_pair_list: List[str]):
         """Randomize the warhead SMILES"""
-
         randomized_warhead_pair_list = []
 
         for warhead_pair in warhead_pair_list:

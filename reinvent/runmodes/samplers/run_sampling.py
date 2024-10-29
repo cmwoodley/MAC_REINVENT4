@@ -60,10 +60,6 @@ def run_sampling(
 
     # number of smiles to be generated for each input; consistent with batch_size parameter as used in RL
     # different from batch size used in dataloader which affect cuda memory
-    params = parameters.dict()
-    params["batch_size"] = parameters.num_smiles
-    sampler, batch_size = setup_sampler(model_type, params, adapter)
-    sampler.unique_sequences = False
 
     try:
         smiles_input_filename = parameters.smiles_file
@@ -71,13 +67,25 @@ def run_sampling(
         smiles_input_filename = None
 
     input_smilies = None
+    reaction = None
+
     num_input_smilies = 1
 
     if smiles_input_filename:
-        input_smilies = read_smiles_csv_file(smiles_input_filename, columns=0)
+        parse_output = read_smiles_csv_file(parameters.smiles_file, columns=0)
+        if type(parse_output) == tuple:
+            input_smilies, reaction = parse_output
+        else:
+            input_smilies = parse_output
         num_input_smilies = len(input_smilies)
 
     num_total_smilies = parameters.num_smiles * num_input_smilies
+
+    params = parameters.dict()
+    params["batch_size"] = parameters.num_smiles
+    sampler, batch_size = setup_sampler(model_type, params, adapter, reaction)
+
+    sampler.unique_sequences = False
 
     logger.info(f"Sampling {num_total_smilies} SMILES from model {agent_model_filename}")
 
