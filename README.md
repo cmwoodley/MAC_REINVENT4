@@ -1,6 +1,5 @@
-REINVENT 4
-==========
-
+This is a **fork of REINVENT4** modified to enable the generation of macrocycles in the run mode. For the unmodified repository of **REINVENT4** please visit the [original REINVENT4 github repo.](https://github.com/MolecularAI/REINVENT4/)
+ 
 Modifications to enable generation of macrocycles
 -----------
 
@@ -23,7 +22,8 @@ And the reaction SMARTS:
 ```
 ([#17:1]-[#6:2]1:[#6:3]:[#6:4]:[#6:5](-[#8:6]):[#6:7](:[#6:8]:1)-[#16+:9].[#7:10](-[#6:11](-[#7:12]-[#6:13])=[#8:14])-[#16+:15])>>[#17:1]-[#6:2]1:[#6:3]:[#6:4]:[#6:5](-[#8:6]):[#6:7](:[#6:8]:1)[#7:10]-[#6:11](-[#7:12]-[#6:13])=[#8:14]
 ```
-
+REINVENT 4
+==========
 
 Description
 -----------
